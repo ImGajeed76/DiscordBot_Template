@@ -4,6 +4,8 @@ import ch.imgajeed.discordBot.Bot.Events.CreateEvent;
 import ch.imgajeed.discordBot.Bot.Events.Event;
 import ch.imgajeed.discordBot.Bot.Vote.CreateVote;
 import ch.imgajeed.discordBot.Bot.Vote.Vote;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -11,7 +13,9 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 //Do not edit!
 public class Listener extends ListenerAdapter {
@@ -24,13 +28,64 @@ public class Listener extends ListenerAdapter {
     public String prefix;
     public JDABuilder builder;
 
+    public static String path = "data.json";
+
     public Listener(String prefix, JDABuilder builder) {
         this.prefix = prefix;
         this.builder = builder;
 
+        var parameters = GetParameters();
+        if (parameters != null) {
+            reactionActions = parameters.reactionActions;
+            votes = parameters.votes;
+            events = parameters.events;
+        }
+        else {
+            System.out.println("parameters == null");
+        }
+
         messageActions.add(new Help());
         messageActions.add(new CreateEvent());
         messageActions.add(new CreateVote());
+    }
+
+    private Parameters GetParameters() {
+        try {
+            var scanner = new Scanner(new File(path));
+            StringBuilder data = new StringBuilder();
+
+            while (scanner.hasNextLine()) {
+                data.append(scanner.nextLine());
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            System.out.println(data);
+            var parameters = mapper.readValue(data.toString(), Parameters.class);
+            System.out.println(parameters.events);
+
+            return parameters;
+        } catch (Exception ignored) {
+        }
+
+        return null;
+    }
+
+    private void SaveChanges() throws IOException {
+        var parameters = new Parameters(reactionActions, votes, events);
+
+        try {
+            var fileWriter = new FileWriter(path);
+            var bufferedWriter = new BufferedWriter(fileWriter);
+
+            ObjectMapper mapper = new ObjectMapper();
+            var data = mapper.writeValueAsString(parameters);
+            System.out.println(data);
+            bufferedWriter.write(data);
+            bufferedWriter.close();
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
 
     @Override
@@ -39,6 +94,11 @@ public class Listener extends ListenerAdapter {
         if (reactionAction != null) {
             reactionAction.OnReactionRemove(event, this);
         }
+
+        try {
+            SaveChanges();
+        } catch (IOException ignored) {
+        }
     }
 
     @Override
@@ -46,6 +106,11 @@ public class Listener extends ListenerAdapter {
         var reactionAction = GetReactionAction(reactionActions, event.getMessageId());
         if (reactionAction != null) {
             reactionAction.OnReactionAdd(event, this);
+        }
+
+        try {
+            SaveChanges();
+        } catch (IOException ignored) {
         }
     }
 
@@ -61,6 +126,11 @@ public class Listener extends ListenerAdapter {
         var action = GetMessageAction(messageActions, GetMessageAction(message));
         if (action != null) {
             action.Run(event, this);
+        }
+
+        try {
+            SaveChanges();
+        } catch (IOException ignored) {
         }
     }
 

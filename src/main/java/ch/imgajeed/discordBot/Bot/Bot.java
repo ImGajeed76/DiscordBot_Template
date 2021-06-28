@@ -1,5 +1,6 @@
 package ch.imgajeed.discordBot.Bot;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -7,6 +8,7 @@ import net.dv8tion.jda.api.utils.Compression;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import javax.security.auth.login.LoginException;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 //Do not edit!
@@ -14,7 +16,7 @@ public class Bot {
     public static JDABuilder builder;
     public static String prefix;
 
-    public Bot(String token, String prefix) {
+    public Bot(String token, String prefix) throws FileNotFoundException, JsonProcessingException {
         Bot.prefix = prefix;
 
         builder = JDABuilder.createDefault(token);

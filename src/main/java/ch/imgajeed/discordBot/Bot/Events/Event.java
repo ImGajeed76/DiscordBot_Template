@@ -1,7 +1,5 @@
 package ch.imgajeed.discordBot.Bot.Events;
 
-import net.dv8tion.jda.api.entities.User;
-
 import java.util.ArrayList;
 
 public class Event {
@@ -9,7 +7,8 @@ public class Event {
     public String time;
 
     public String messageID;
-    public ArrayList<User> people = new ArrayList<>();
+    public ArrayList<String> peopleID = new ArrayList<>();
+    public ArrayList<String> peopleName = new ArrayList<>();
 
     public Event(String name, String time) {
         this.name = name;
@@ -19,8 +18,8 @@ public class Event {
     public String GetMessage() {
         StringBuilder people = new StringBuilder();
 
-        for (User person : this.people) {
-            people.append("> ").append(person.getName()).append(" \n");
+        for (String person : this.peopleID) {
+            people.append("> ").append(peopleName).append(" \n");
         }
 
         return "> ** ```" + name + ": " + time +

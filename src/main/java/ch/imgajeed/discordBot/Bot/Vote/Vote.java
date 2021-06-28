@@ -1,10 +1,12 @@
 package ch.imgajeed.discordBot.Bot.Vote;
 
+import java.util.ArrayList;
+
 public class Vote {
     public String title;
     public String messageID = "";
-    public float upVotes = 0f;
-    public float downVotes = 0f;
+
+    public ArrayList<VotePerson> votes = new ArrayList<>();
 
     public boolean circleEnabled;
 
@@ -13,27 +15,51 @@ public class Vote {
         this.circleEnabled = circleEnabled;
     }
 
-    public String GetMessage() {
-        int votes = Math.round(upVotes / (upVotes + downVotes) * 40);
+    public float getUpVotes() {
+        var upVotes = 0;
 
-        if (upVotes == 0 && downVotes == 0) {
-            votes = Math.round((upVotes + 1) / ((upVotes + 1) + (downVotes + 1)) * 40);
+        for (VotePerson person : votes) {
+            if (person.upVote) {
+                upVotes += 1;
+            }
         }
 
-        var space = 40 - ("Up Votes: " + Math.round(upVotes) + "Down Votes: " + Math.round(downVotes)).length();
+        return upVotes;
+    }
+
+    public float getDownVotes() {
+        var downVotes = 0;
+
+        for (VotePerson person : votes) {
+            if (!person.upVote) {
+                downVotes += 1;
+            }
+        }
+
+        return downVotes;
+    }
+
+    public String GetMessage() {
+        int votes = Math.round(getUpVotes() / (getUpVotes() + getDownVotes()) * 40);
+
+        if (getUpVotes() == 0 && getDownVotes() == 0) {
+            votes = Math.round((getUpVotes() + 1) / ((getUpVotes() + 1) + (getDownVotes() + 1)) * 40);
+        }
+
+        var space = 40 - ("Up Votes: " + Math.round(getUpVotes()) + "Down Votes: " + Math.round(getDownVotes())).length();
 
         if (!circleEnabled) {
             return "> ** ```" + title + ": \n > \n > " +
                     "▓".repeat(Math.max(0, votes)) +
                     "░".repeat(Math.max(0, 40 - votes)) +
                     "\n > \n > " +
-                    "Up Votes: " + Math.round(upVotes) + " ".repeat(Math.max(0, space)) + "Down Votes: " + Math.round(downVotes) + "``` **";
+                    "Up Votes: " + Math.round(getUpVotes()) + " ".repeat(Math.max(0, space)) + "Down Votes: " + Math.round(getDownVotes()) + "``` **";
         } else {
             return "> ** ```" + title + ": \n > \n > " +
                     "-".repeat(Math.max(0, votes)) + "Ｏ" +
                     "-".repeat(Math.max(0, 40 - votes)) +
                     "\n > \n > " +
-                    "Up Votes: " + Math.round(upVotes) + " ".repeat(Math.max(0, space + 1)) + "Down Votes: " + Math.round(downVotes) + "``` **";
+                    "Up Votes: " + Math.round(getUpVotes()) + " ".repeat(Math.max(0, space + 1)) + "Down Votes: " + Math.round(getDownVotes()) + "``` **";
         }
     }
 }

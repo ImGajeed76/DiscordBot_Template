@@ -2,14 +2,16 @@ package ch.imgajeed.discordBot.Bot.Vote;
 
 import ch.imgajeed.discordBot.Bot.Listener;
 import ch.imgajeed.discordBot.Bot.ReactionAction;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class VoteFor extends ReactionAction {
-    private final String id;
+    public final String id;
 
     public VoteFor(String id) {
         this.id = id;
@@ -26,10 +28,12 @@ public class VoteFor extends ReactionAction {
         var vote = GetVote(event.getMessageId(), listener);
         assert vote != null;
 
-        if (emoji.equals("⬆") && !Objects.requireNonNull(event.getUser()).isBot()) {
-            vote.upVotes += 1;
-        } else if (emoji.equals("⬇") && !Objects.requireNonNull(event.getUser()).isBot()) {
-            vote.downVotes += 1;
+        if (!HasVoted(event.getUser(), vote.votes) && !Objects.requireNonNull(event.getUser()).isBot()) {
+            if (emoji.equals("⬆")) {
+                vote.votes.add(new VotePerson(true, event.getUser().getId()));
+            } else if (emoji.equals("⬇")) {
+                vote.votes.add(new VotePerson(false, event.getUser().getId()));
+            }
         }
 
         event.getChannel().editMessageById(event.getMessageId(), vote.GetMessage()).queue();
@@ -41,16 +45,28 @@ public class VoteFor extends ReactionAction {
         var vote = GetVote(event.getMessageId(), listener);
         assert vote != null;
 
-        if (emoji.equals("⬆") && !Objects.requireNonNull(event.getUser()).isBot()) {
-            vote.upVotes -= 1;
-        } else if (emoji.equals("⬇") && !Objects.requireNonNull(event.getUser()).isBot()) {
-            vote.downVotes -= 1;
+        if (HasVoted(event.getUser(), vote.votes) && !Objects.requireNonNull(event.getUser()).isBot()) {
+            if (emoji.equals("⬆")) {
+                vote.votes.remove(GetPerson(true, event.getUser(), vote.votes));
+            } else if (emoji.equals("⬇")) {
+                vote.votes.remove(GetPerson(false, event.getUser(), vote.votes));
+            }
         }
 
         event.getChannel().editMessageById(event.getMessageId(), vote.GetMessage()).queue();
     }
 
-    private Vote GetVote(String messageID, Listener listener) {
+    public VotePerson GetPerson(boolean upVote, User user, ArrayList<VotePerson> votes) {
+        for (VotePerson person : votes) {
+            if (person.userID.equals(user.getId())){
+                return person;
+            }
+        }
+
+        return new VotePerson(upVote, user.getId());
+    }
+
+    public Vote GetVote(String messageID, Listener listener) {
         for (int i = 0; i < listener.votes.size(); i++) {
             if (listener.votes.get(i).messageID.equals(messageID)) {
                 return listener.votes.get(i);
@@ -58,5 +74,15 @@ public class VoteFor extends ReactionAction {
         }
 
         return null;
+    }
+
+    public boolean HasVoted(User user, ArrayList<VotePerson> votes) {
+        for (VotePerson person : votes) {
+            if (person.userID.equals(user.getId())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
