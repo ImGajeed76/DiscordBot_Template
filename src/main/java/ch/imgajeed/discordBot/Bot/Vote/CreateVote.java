@@ -12,6 +12,11 @@ public class CreateVote extends MessageAction {
     }
 
     @Override
+    public String content() {
+        return "*:Title* :*CircleEnabled(true / false)*";
+    }
+
+    @Override
     public void Run(@NotNull MessageReceivedEvent event, Listener listener) {
         var content = listener.GetContent(event.getMessage().getContentRaw());
         var title = content.get(0);

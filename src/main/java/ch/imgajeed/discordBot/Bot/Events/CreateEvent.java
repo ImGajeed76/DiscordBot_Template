@@ -14,6 +14,11 @@ public class CreateEvent extends MessageAction {
     }
 
     @Override
+    public String content() {
+        return ":*Name* :*Time*";
+    }
+
+    @Override
     public void Run(@NotNull MessageReceivedEvent receivedEvent, Listener listener) {
         var content = listener.GetContent(receivedEvent.getMessage().getContentRaw());
         var event = new Event(content.get(0), content.get(1));

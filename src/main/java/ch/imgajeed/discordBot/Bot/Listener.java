@@ -2,6 +2,9 @@ package ch.imgajeed.discordBot.Bot;
 
 import ch.imgajeed.discordBot.Bot.Events.CreateEvent;
 import ch.imgajeed.discordBot.Bot.Events.Event;
+import ch.imgajeed.discordBot.Bot.Random.RandomNumber;
+import ch.imgajeed.discordBot.Bot.RandomTeams.CreateRandomTeam;
+import ch.imgajeed.discordBot.Bot.RandomTeams.Team;
 import ch.imgajeed.discordBot.Bot.Vote.CreateVote;
 import ch.imgajeed.discordBot.Bot.Vote.Vote;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,6 +27,7 @@ public class Listener extends ListenerAdapter {
 
     public ArrayList<Vote> votes = new ArrayList<>();
     public ArrayList<Event> events = new ArrayList<>();
+    public ArrayList<Team> teams = new ArrayList<>();
 
     public String prefix;
     public JDABuilder builder;
@@ -39,6 +43,7 @@ public class Listener extends ListenerAdapter {
             reactionActions = parameters.reactionActions;
             votes = parameters.votes;
             events = parameters.events;
+            teams = parameters.teams;
         }
         else {
             System.out.println("parameters == null");
@@ -47,6 +52,8 @@ public class Listener extends ListenerAdapter {
         messageActions.add(new Help());
         messageActions.add(new CreateEvent());
         messageActions.add(new CreateVote());
+        messageActions.add(new CreateRandomTeam());
+        messageActions.add(new RandomNumber());
     }
 
     private Parameters GetParameters() {
@@ -72,7 +79,7 @@ public class Listener extends ListenerAdapter {
     }
 
     private void SaveChanges() throws IOException {
-        var parameters = new Parameters(reactionActions, votes, events);
+        var parameters = new Parameters(reactionActions, votes, events, teams);
 
         try {
             var fileWriter = new FileWriter(path);
