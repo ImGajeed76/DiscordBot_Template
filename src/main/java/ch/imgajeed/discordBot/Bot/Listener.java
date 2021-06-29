@@ -7,8 +7,11 @@ import ch.imgajeed.discordBot.Bot.RandomTeams.CreateRandomTeam;
 import ch.imgajeed.discordBot.Bot.RandomTeams.Team;
 import ch.imgajeed.discordBot.Bot.Vote.CreateVote;
 import ch.imgajeed.discordBot.Bot.Vote.Vote;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.module.paranamer.ParanamerModule;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -32,7 +35,7 @@ public class Listener extends ListenerAdapter {
     public String prefix;
     public JDABuilder builder;
 
-    public static String path = "data.json";
+    public static String path = "data2.json";
 
     public Listener(String prefix, JDABuilder builder) {
         this.prefix = prefix;
@@ -44,8 +47,7 @@ public class Listener extends ListenerAdapter {
             votes = parameters.votes;
             events = parameters.events;
             teams = parameters.teams;
-        }
-        else {
+        } else {
             System.out.println("parameters == null");
         }
 
@@ -58,22 +60,36 @@ public class Listener extends ListenerAdapter {
 
     private Parameters GetParameters() {
         try {
-            var scanner = new Scanner(new File(path));
-            StringBuilder data = new StringBuilder();
-
-            while (scanner.hasNextLine()) {
-                data.append(scanner.nextLine());
-            }
-
-            ObjectMapper mapper = new ObjectMapper();
-
-            System.out.println(data);
-            var parameters = mapper.readValue(data.toString(), Parameters.class);
-            System.out.println(parameters.events);
-
+            FileInputStream fin = new FileInputStream(path);
+            ObjectInputStream ios = new ObjectInputStream(fin);
+            Parameters parameters = (Parameters) ios.readObject();
+            ios.close();
             return parameters;
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            System.out.println(e);
         }
+
+        //try {
+        //    var scanner = new Scanner(new File(path));
+        //    StringBuilder data = new StringBuilder();
+//
+        //    while (scanner.hasNextLine()) {
+        //        data.append(scanner.nextLine());
+        //    }
+//
+        //    ObjectMapper mapper = new ObjectMapper();
+//
+        //    System.out.println(data);
+        //    mapper.registerModule(new ParanamerModule());
+        //    mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+//
+        //    var parameters = mapper.readValue(data.toString(), Parameters.class);
+        //    System.out.println(parameters.events);
+//
+        //    return parameters;
+        //} catch (Exception e) {
+        //    System.out.println(e);
+        //}
 
         return null;
     }
@@ -82,17 +98,29 @@ public class Listener extends ListenerAdapter {
         var parameters = new Parameters(reactionActions, votes, events, teams);
 
         try {
-            var fileWriter = new FileWriter(path);
-            var bufferedWriter = new BufferedWriter(fileWriter);
-
-            ObjectMapper mapper = new ObjectMapper();
-            var data = mapper.writeValueAsString(parameters);
-            System.out.println(data);
-            bufferedWriter.write(data);
-            bufferedWriter.close();
-        } catch (IOException e) {
+            FileOutputStream fos = new FileOutputStream(path);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(parameters);
+            oos.close();
+        } catch (Exception e) {
             System.out.println(e);
         }
+
+        //try {
+        //    var fileWriter = new FileWriter(path);
+        //    var bufferedWriter = new BufferedWriter(fileWriter);
+//
+        //    ObjectMapper mapper = new ObjectMapper();
+        //    mapper.registerModule(new ParanamerModule());
+        //    mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+//
+        //    var data = mapper.writeValueAsString(parameters);
+        //    System.out.println(data);
+        //    bufferedWriter.write(data);
+        //    bufferedWriter.close();
+        //} catch (IOException e) {
+        //    System.out.println(e);
+        //}
     }
 
     @Override

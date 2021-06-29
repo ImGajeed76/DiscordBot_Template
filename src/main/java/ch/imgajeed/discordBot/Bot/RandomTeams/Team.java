@@ -1,17 +1,23 @@
 package ch.imgajeed.discordBot.Bot.RandomTeams;
 
 import ch.imgajeed.discordBot.Bot.Person;
+import lombok.AllArgsConstructor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Team {
+@AllArgsConstructor
+public class Team implements Serializable {
+    public String add = "✅";
+    public String generate = "\uD83C\uDD97";
+
     public ArrayList<ArrayList<Person>> teams = new ArrayList<>();
     public ArrayList<Integer> usedPersons = new ArrayList();
 
     public ArrayList<Person> persons = new ArrayList<>();
-    public int teamSize;
-    public String title;
+    public int teamSize = 1;
+    public String title = "";
     public String messageID = "";
 
     public Team(String title, int teamSize) {
@@ -34,8 +40,8 @@ public class Team {
         CreateTeams();
         StringBuilder message = new StringBuilder();
 
-        for (int i = 0; i < teams.size(); i++){
-            message.append("> Team ").append(i+1).append(":").append("\n");
+        for (int i = 0; i < teams.size(); i++) {
+            message.append("> Team ").append(i + 1).append(":").append("\n");
 
             for (Person person : teams.get(i)) {
                 message.append(">   ").append(person.name).append("\n");
@@ -76,11 +82,10 @@ public class Team {
         Random random = new Random();
         int number = random.nextInt(persons.size());
 
-        if (!intInArray(usedPersons, number)){
+        if (!intInArray(usedPersons, number)) {
             usedPersons.add(number);
             return persons.get(number);
-        }
-        else {
+        } else {
             return RandomPerson();
         }
     }

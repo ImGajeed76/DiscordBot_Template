@@ -1,10 +1,10 @@
 package ch.imgajeed.discordBot.Bot.Vote;
 
-import net.dv8tion.jda.api.entities.User;
+import java.io.Serializable;
 
-public class VotePerson {
-    public boolean upVote;
-    public String userID;
+public class VotePerson implements Serializable {
+    public boolean upVote = false;
+    public String userID = "";
 
     public VotePerson(boolean upVote, String userID) {
         this.upVote = upVote;

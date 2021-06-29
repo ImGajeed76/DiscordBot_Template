@@ -29,9 +29,9 @@ public class VoteFor extends ReactionAction {
         assert vote != null;
 
         if (!HasVoted(event.getUser(), vote.votes) && !Objects.requireNonNull(event.getUser()).isBot()) {
-            if (emoji.equals("⬆")) {
+            if (emoji.equals(vote.up)) {
                 vote.votes.add(new VotePerson(true, event.getUser().getId()));
-            } else if (emoji.equals("⬇")) {
+            } else if (emoji.equals(vote.down)) {
                 vote.votes.add(new VotePerson(false, event.getUser().getId()));
             }
         }
@@ -46,9 +46,9 @@ public class VoteFor extends ReactionAction {
         assert vote != null;
 
         if (HasVoted(event.getUser(), vote.votes) && !Objects.requireNonNull(event.getUser()).isBot()) {
-            if (emoji.equals("⬆")) {
+            if (emoji.equals(vote.up)) {
                 vote.votes.remove(GetPerson(true, event.getUser(), vote.votes));
-            } else if (emoji.equals("⬇")) {
+            } else if (emoji.equals(vote.down)) {
                 vote.votes.remove(GetPerson(false, event.getUser(), vote.votes));
             }
         }
@@ -58,7 +58,7 @@ public class VoteFor extends ReactionAction {
 
     public VotePerson GetPerson(boolean upVote, User user, ArrayList<VotePerson> votes) {
         for (VotePerson person : votes) {
-            if (person.userID.equals(user.getId())){
+            if (person.userID.equals(user.getId())) {
                 return person;
             }
         }

@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import javax.security.auth.login.LoginException;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 
 //Do not edit!
 public class Bot {

@@ -25,8 +25,8 @@ public class CreateVote extends MessageAction {
 
         event.getChannel().sendMessage(vote.GetMessage()).queue(message -> {
             vote.messageID = message.getId();
-            message.addReaction("⬆").queue();
-            message.addReaction("⬇").queue();
+            message.addReaction(vote.up).queue();
+            message.addReaction(vote.down).queue();
             listener.reactionActions.add(new VoteFor(message.getId()));
         });
 

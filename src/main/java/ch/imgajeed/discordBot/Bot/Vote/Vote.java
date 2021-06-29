@@ -1,14 +1,21 @@
 package ch.imgajeed.discordBot.Bot.Vote;
 
+import lombok.AllArgsConstructor;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Vote {
-    public String title;
+@AllArgsConstructor
+public class Vote implements Serializable {
+    public String up = "⬆";
+    public String down = "⬇";
+
+    public String title = "";
     public String messageID = "";
 
     public ArrayList<VotePerson> votes = new ArrayList<>();
 
-    public boolean circleEnabled;
+    public boolean circleEnabled = false;
 
     public Vote(String title, boolean circleEnabled) {
         this.title = title;

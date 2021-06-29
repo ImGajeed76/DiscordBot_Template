@@ -1,12 +1,18 @@
 package ch.imgajeed.discordBot.Bot.Events;
 
+import lombok.AllArgsConstructor;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Event {
-    public String name;
-    public String time;
+@AllArgsConstructor
+public class Event implements Serializable {
+    public String add = "✅";
 
-    public String messageID;
+    public String name = "";
+    public String time = "";
+
+    public String messageID = "";
     public ArrayList<String> peopleID = new ArrayList<>();
     public ArrayList<String> peopleName = new ArrayList<>();
 

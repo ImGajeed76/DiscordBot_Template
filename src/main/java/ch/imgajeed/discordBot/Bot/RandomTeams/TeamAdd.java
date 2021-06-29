@@ -29,10 +29,10 @@ public class TeamAdd extends ReactionAction {
         var team = GetTeam(listener.teams, event.getMessageId());
         assert team != null;
 
-        if (emoji.equals("✅") && !Objects.requireNonNull(event.getUser()).isBot()){
+        if (emoji.equals(team.add) && !Objects.requireNonNull(event.getUser()).isBot()) {
             team.persons.add(new Person(event.getUser().getId(), event.getUser().getName()));
             event.getChannel().editMessageById(event.getMessageId(), team.GetMessage()).queue();
-        } else if (emoji.equals("\uD83C\uDD97") && !Objects.requireNonNull(event.getUser()).isBot()) {
+        } else if (emoji.equals(team.generate) && !Objects.requireNonNull(event.getUser()).isBot()) {
             event.getChannel().editMessageById(event.getMessageId(), team.GetTeams()).queue();
         }
     }
@@ -43,10 +43,10 @@ public class TeamAdd extends ReactionAction {
         var team = GetTeam(listener.teams, event.getMessageId());
         assert team != null;
 
-        if (emoji.equals("✅") && !Objects.requireNonNull(event.getUser()).isBot()){
+        if (emoji.equals(team.add) && !Objects.requireNonNull(event.getUser()).isBot()) {
             team.persons.remove(GetPerson(event.getUser(), team.persons));
             event.getChannel().editMessageById(event.getMessageId(), team.GetMessage()).queue();
-        } else if (emoji.equals("\uD83C\uDD97") && !Objects.requireNonNull(event.getUser()).isBot()) {
+        } else if (emoji.equals(team.generate) && !Objects.requireNonNull(event.getUser()).isBot()) {
             event.getChannel().editMessageById(event.getMessageId(), team.GetMessage()).queue();
         }
     }

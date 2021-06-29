@@ -7,10 +7,11 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class EventAdd extends ReactionAction {
+public class EventAdd extends ReactionAction implements Serializable {
     public String id;
 
     public EventAdd(String id) {
@@ -28,7 +29,7 @@ public class EventAdd extends ReactionAction {
         var event = GetEvent(reactionAddEvent.getMessageId(), listener);
         assert event != null;
 
-        if (emoji.equals("✅") && !Objects.requireNonNull(reactionAddEvent.getUser()).isBot() && !UserInList(reactionAddEvent.getUser(), event.peopleID)) {
+        if (emoji.equals(event.add) && !Objects.requireNonNull(reactionAddEvent.getUser()).isBot() && !UserInList(reactionAddEvent.getUser(), event.peopleID)) {
             event.peopleName.add(reactionAddEvent.getUser().getName());
             event.peopleID.add(reactionAddEvent.getUser().getId());
         }
@@ -42,7 +43,7 @@ public class EventAdd extends ReactionAction {
         var event = GetEvent(reactionAddEvent.getMessageId(), listener);
         assert event != null;
 
-        if (emoji.equals("✅") && !Objects.requireNonNull(reactionAddEvent.getUser()).isBot() && UserInList(reactionAddEvent.getUser(), event.peopleID)) {
+        if (emoji.equals(event.add) && !Objects.requireNonNull(reactionAddEvent.getUser()).isBot() && UserInList(reactionAddEvent.getUser(), event.peopleID)) {
             event.peopleName.remove(GetUserByName(reactionAddEvent.getUser(), event.peopleName));
             event.peopleID.remove(GetUserByID(reactionAddEvent.getUser(), event.peopleID));
         }
