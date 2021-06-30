@@ -26,12 +26,20 @@ public class EventAdd extends ReactionAction implements Serializable {
     @Override
     public void OnReactionAdd(@NotNull MessageReactionAddEvent reactionAddEvent, Listener listener) {
         var emoji = reactionAddEvent.getReactionEmote().getEmoji();
+        System.out.println(emoji);
+        var user = reactionAddEvent.getUser();
+        if (user == null) {return;}
         var event = GetEvent(reactionAddEvent.getMessageId(), listener);
         assert event != null;
 
-        if (emoji.equals(event.add) && !Objects.requireNonNull(reactionAddEvent.getUser()).isBot() && !UserInList(reactionAddEvent.getUser(), event.peopleID)) {
-            event.peopleName.add(reactionAddEvent.getUser().getName());
-            event.peopleID.add(reactionAddEvent.getUser().getId());
+        if (emoji.equals(event.add) && !user.isBot() && !UserInList(user, event.peopleID)) {
+            event.peopleName.add(user.getName());
+            event.peopleID.add(user.getId());
+        }
+
+        if (emoji.equals(event.remove) && !user.isBot() && UserInList(user, event.peopleID)) {
+            event.peopleName.remove(GetUserByName(user, event.peopleName));
+            event.peopleID.remove(GetUserByID(user, event.peopleID));
         }
 
         reactionAddEvent.getChannel().editMessageById(reactionAddEvent.getMessageId(), event.GetMessage()).queue();
@@ -39,16 +47,7 @@ public class EventAdd extends ReactionAction implements Serializable {
 
     @Override
     public void OnReactionRemove(@NotNull MessageReactionRemoveEvent reactionAddEvent, Listener listener) {
-        var emoji = reactionAddEvent.getReactionEmote().getEmoji();
-        var event = GetEvent(reactionAddEvent.getMessageId(), listener);
-        assert event != null;
 
-        if (emoji.equals(event.add) && !Objects.requireNonNull(reactionAddEvent.getUser()).isBot() && UserInList(reactionAddEvent.getUser(), event.peopleID)) {
-            event.peopleName.remove(GetUserByName(reactionAddEvent.getUser(), event.peopleName));
-            event.peopleID.remove(GetUserByID(reactionAddEvent.getUser(), event.peopleID));
-        }
-
-        reactionAddEvent.getChannel().editMessageById(reactionAddEvent.getMessageId(), event.GetMessage()).queue();
     }
 
     public String GetUserByID(User user, ArrayList<String> peopleID) {

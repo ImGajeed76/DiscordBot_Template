@@ -27,7 +27,9 @@ public class CreateRandomTeam extends MessageAction {
         event.getChannel().sendMessage(team.GetMessage()).queue(message -> {
             team.messageID = message.getId();
             message.addReaction(team.add).queue();
+            message.addReaction(team.remove).queue();
             message.addReaction(team.generate).queue();
+            message.addReaction(team.back).queue();
             listener.teams.add(team);
             listener.reactionActions.add(new TeamAdd(message.getId()));
         });

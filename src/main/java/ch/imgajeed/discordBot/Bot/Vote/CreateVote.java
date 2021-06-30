@@ -27,6 +27,7 @@ public class CreateVote extends MessageAction {
             vote.messageID = message.getId();
             message.addReaction(vote.up).queue();
             message.addReaction(vote.down).queue();
+            message.addReaction(vote.clear).queue();
             listener.reactionActions.add(new VoteFor(message.getId()));
         });
 

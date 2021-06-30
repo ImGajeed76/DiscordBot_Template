@@ -26,6 +26,7 @@ public class CreateEvent extends MessageAction {
         receivedEvent.getChannel().sendMessage(event.GetMessage()).queue(message -> {
             event.messageID = message.getId();
             message.addReaction(event.add).queue();
+            message.addReaction(event.remove).queue();
             listener.reactionActions.add(new EventAdd(message.getId()));
         });
 

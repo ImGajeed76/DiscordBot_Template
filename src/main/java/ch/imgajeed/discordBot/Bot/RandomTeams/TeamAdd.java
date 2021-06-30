@@ -8,10 +8,11 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class TeamAdd extends ReactionAction {
+public class TeamAdd extends ReactionAction implements Serializable {
     public String messageID;
 
     public TeamAdd(String messageID) {
@@ -29,26 +30,33 @@ public class TeamAdd extends ReactionAction {
         var team = GetTeam(listener.teams, event.getMessageId());
         assert team != null;
 
-        if (emoji.equals(team.add) && !Objects.requireNonNull(event.getUser()).isBot()) {
+
+        if (emoji.equals(team.add) && !Objects.requireNonNull(event.getUser()).isBot() && !IsPersonInList(event.getUser(), team.persons)) {
             team.persons.add(new Person(event.getUser().getId(), event.getUser().getName()));
             event.getChannel().editMessageById(event.getMessageId(), team.GetMessage()).queue();
         } else if (emoji.equals(team.generate) && !Objects.requireNonNull(event.getUser()).isBot()) {
             event.getChannel().editMessageById(event.getMessageId(), team.GetTeams()).queue();
+        } else if (emoji.equals(team.remove) && !Objects.requireNonNull(event.getUser()).isBot() && IsPersonInList(event.getUser(), team.persons)) {
+            team.persons.remove(GetPerson(event.getUser(), team.persons));
+            event.getChannel().editMessageById(event.getMessageId(), team.GetMessage()).queue();
+        } else if (emoji.equals(team.back) && !Objects.requireNonNull(event.getUser()).isBot()) {
+            event.getChannel().editMessageById(event.getMessageId(), team.GetMessage()).queue();
         }
     }
 
     @Override
     public void OnReactionRemove(@NotNull MessageReactionRemoveEvent event, Listener listener) {
-        var emoji = event.getReactionEmote().getEmoji();
-        var team = GetTeam(listener.teams, event.getMessageId());
-        assert team != null;
 
-        if (emoji.equals(team.add) && !Objects.requireNonNull(event.getUser()).isBot()) {
-            team.persons.remove(GetPerson(event.getUser(), team.persons));
-            event.getChannel().editMessageById(event.getMessageId(), team.GetMessage()).queue();
-        } else if (emoji.equals(team.generate) && !Objects.requireNonNull(event.getUser()).isBot()) {
-            event.getChannel().editMessageById(event.getMessageId(), team.GetMessage()).queue();
+    }
+
+    private boolean IsPersonInList(User user, ArrayList<Person> persons) {
+        for (Person person : persons) {
+            if (person.userID.equals(user.getId())) {
+                return true;
+            }
         }
+
+        return false;
     }
 
     private Person GetPerson(User user, ArrayList<Person> persons) {

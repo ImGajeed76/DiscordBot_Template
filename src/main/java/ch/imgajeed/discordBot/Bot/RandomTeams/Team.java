@@ -10,7 +10,9 @@ import java.util.Random;
 @AllArgsConstructor
 public class Team implements Serializable {
     public String add = "✅";
-    public String generate = "\uD83C\uDD97";
+    public String remove = "❎";
+    public String generate = "\uD83D\uDD04";
+    public String back = "↪";
 
     public ArrayList<ArrayList<Person>> teams = new ArrayList<>();
     public ArrayList<Integer> usedPersons = new ArrayList();
@@ -54,6 +56,8 @@ public class Team implements Serializable {
     }
 
     public void CreateTeams() {
+        usedPersons = new ArrayList<>();
+        teams = new ArrayList<>();
         int tolerance = persons.size() % teamSize;
         int teamCount = (persons.size() - tolerance) / teamSize;
 

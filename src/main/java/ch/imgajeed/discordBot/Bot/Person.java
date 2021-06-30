@@ -1,6 +1,8 @@
 package ch.imgajeed.discordBot.Bot;
 
-public class Person {
+import java.io.Serializable;
+
+public class Person implements Serializable {
     public String userID;
     public String name;
 

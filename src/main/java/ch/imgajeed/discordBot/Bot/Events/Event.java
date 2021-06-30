@@ -15,6 +15,7 @@ public class Event implements Serializable {
     public String messageID = "";
     public ArrayList<String> peopleID = new ArrayList<>();
     public ArrayList<String> peopleName = new ArrayList<>();
+    public String remove = "❎";
 
     public Event(String name, String time) {
         this.name = name;
@@ -24,8 +25,8 @@ public class Event implements Serializable {
     public String GetMessage() {
         StringBuilder people = new StringBuilder();
 
-        for (String person : this.peopleID) {
-            people.append("> ").append(peopleName).append(" \n");
+        for (String person : this.peopleName) {
+            people.append("> ").append(person).append(" \n");
         }
 
         return "> ** ```" + name + ": " + time +

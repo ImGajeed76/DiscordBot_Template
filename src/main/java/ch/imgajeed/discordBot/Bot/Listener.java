@@ -13,6 +13,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.module.paranamer.ParanamerModule;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
@@ -20,6 +23,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.nio.channels.Channel;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -35,7 +39,7 @@ public class Listener extends ListenerAdapter {
     public String prefix;
     public JDABuilder builder;
 
-    public static String path = "data2.json";
+    public static String path = "data.json";
 
     public Listener(String prefix, JDABuilder builder) {
         this.prefix = prefix;
@@ -63,6 +67,7 @@ public class Listener extends ListenerAdapter {
             FileInputStream fin = new FileInputStream(path);
             ObjectInputStream ios = new ObjectInputStream(fin);
             Parameters parameters = (Parameters) ios.readObject();
+            System.out.println("Save from " + parameters.date + " loaded");
             ios.close();
             return parameters;
         } catch (Exception e) {
@@ -102,6 +107,7 @@ public class Listener extends ListenerAdapter {
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(parameters);
             oos.close();
+            System.out.println("Saved");
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -123,8 +129,21 @@ public class Listener extends ListenerAdapter {
         //}
     }
 
+    private boolean isPrivateChanel(ChannelType channelType, MessageChannel channel, User user) {
+        if (channelType.equals(ChannelType.PRIVATE) && !user.isBot()) {
+            channel.sendMessage("** This Bot does not work in private channels! **").queue();
+            return true;
+        }
+
+        return false;
+    }
+
     @Override
     public void onMessageReactionRemove(@NotNull MessageReactionRemoveEvent event) {
+        if (isPrivateChanel(event.getChannelType(), event.getChannel(), event.getUser())) {
+            return;
+        }
+
         var reactionAction = GetReactionAction(reactionActions, event.getMessageId());
         if (reactionAction != null) {
             reactionAction.OnReactionRemove(event, this);
@@ -138,6 +157,10 @@ public class Listener extends ListenerAdapter {
 
     @Override
     public void onMessageReactionAdd(@NotNull MessageReactionAddEvent event) {
+        if (isPrivateChanel(event.getChannelType(), event.getChannel(), event.getUser())) {
+            return;
+        }
+
         var reactionAction = GetReactionAction(reactionActions, event.getMessageId());
         if (reactionAction != null) {
             reactionAction.OnReactionAdd(event, this);

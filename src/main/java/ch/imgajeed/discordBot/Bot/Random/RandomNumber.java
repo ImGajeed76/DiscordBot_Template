@@ -15,16 +15,33 @@ public class RandomNumber extends MessageAction {
 
     @Override
     public String content() {
-        return ":*max(0 - max)*";
+        return ":*min* :*max*";
     }
 
     @Override
     public void Run(@NotNull MessageReceivedEvent event, Listener listener) {
         var content = listener.GetContent(event.getMessage().getContentRaw());
-        var bounds = Integer.parseInt(content.get(0)) + 1;
+
+        var min = GetNumber(content.get(0)) + 1;
+        var max = GetNumber(content.get(1)) + 1;
+
+        var bounds = max - min;
 
         Random random = new Random();
-        var number = (random.nextInt(bounds));
-        event.getChannel().sendMessage(String.valueOf(number)).queue();
+        var number = (random.nextInt(bounds)) + min;
+        event.getChannel().sendMessage("> " + number).queue();
+    }
+
+    private int GetNumber(String s) {
+        var charArray = s.toCharArray();
+        StringBuilder numberString = new StringBuilder();
+
+        for (char c : charArray) {
+            if (c != ' ') {
+                numberString.append(c);
+            }
+        }
+
+        return Integer.parseInt(numberString.toString());
     }
 }

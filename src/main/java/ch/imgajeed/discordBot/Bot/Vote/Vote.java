@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class Vote implements Serializable {
     public String up = "⬆";
     public String down = "⬇";
+    public String clear = "❎";
 
     public String title = "";
     public String messageID = "";
