@@ -9,6 +9,11 @@ import java.util.Random;
 
 public class RandomNumber extends MessageAction {
     @Override
+    public int contentLength() {
+        return 2;
+    }
+
+    @Override
     public String name() {
         return "RandomNumber";
     }
@@ -21,6 +26,7 @@ public class RandomNumber extends MessageAction {
     @Override
     public void Run(@NotNull MessageReceivedEvent event, Listener listener) {
         var content = listener.GetContent(event.getMessage().getContentRaw());
+        if (content.size() < contentLength()) listener.ContentToShort(event.getChannel());
 
         var min = GetNumber(content.get(0)) + 1;
         var max = GetNumber(content.get(1)) + 1;

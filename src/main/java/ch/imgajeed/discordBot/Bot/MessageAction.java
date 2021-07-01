@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 //Do not edit!
 public abstract class MessageAction {
+    public abstract int contentLength();
+
     public abstract String name();
 
     public abstract String content();

@@ -6,6 +6,11 @@ import org.jetbrains.annotations.NotNull;
 //Do not edit!
 public class Help extends MessageAction {
     @Override
+    public int contentLength() {
+        return 0;
+    }
+
+    @Override
     public String name() {
         return "Help";
     }
@@ -46,6 +51,8 @@ public class Help extends MessageAction {
         }
 
         SendMessageToAuthor(event, message.toString());
+
+        SendMessageToAuthor(event, "> *bsp:* -CreateEvent :Testing the bot! :14.30");
     }
 
     private void SendMessageToAuthor(@NotNull MessageReceivedEvent event, String message) {

@@ -7,11 +7,6 @@ import ch.imgajeed.discordBot.Bot.RandomTeams.CreateRandomTeam;
 import ch.imgajeed.discordBot.Bot.RandomTeams.Team;
 import ch.imgajeed.discordBot.Bot.Vote.CreateVote;
 import ch.imgajeed.discordBot.Bot.Vote.Vote;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.module.paranamer.ParanamerModule;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -23,9 +18,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.nio.channels.Channel;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 //Do not edit!
 public class Listener extends ListenerAdapter {
@@ -60,6 +53,10 @@ public class Listener extends ListenerAdapter {
         messageActions.add(new CreateVote());
         messageActions.add(new CreateRandomTeam());
         messageActions.add(new RandomNumber());
+    }
+
+    public void ContentToShort(MessageChannel channel) {
+        channel.sendMessage("> **Error:** Content is to short. Start parameter by using a ':'.").queue();
     }
 
     private Parameters GetParameters() {
@@ -268,6 +265,11 @@ public class Listener extends ListenerAdapter {
         for (char c : m) {
             if (c == ':') {
                 write = false;
+                if (pos > -1) {
+                    if (content.get(pos).length() > 1) {
+                        content.get(pos).replace(content.get(pos).length() - 1, content.get(pos).length(), "");
+                    }
+                }
             }
 
             if (write) {

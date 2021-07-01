@@ -7,6 +7,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class CreateRandomTeam extends MessageAction {
     @Override
+    public int contentLength() {
+        return 2;
+    }
+
+    @Override
     public String name() {
         return "RandomTeams";
     }
@@ -19,6 +24,7 @@ public class CreateRandomTeam extends MessageAction {
     @Override
     public void Run(@NotNull MessageReceivedEvent event, Listener listener) {
         var content = listener.GetContent(event.getMessage().getContentRaw());
+        if (content.size() < contentLength()) listener.ContentToShort(event.getChannel());
         var title = content.get(0);
         var teamSize = content.get(1);
 

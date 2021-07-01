@@ -5,9 +5,12 @@ import ch.imgajeed.discordBot.Bot.MessageAction;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-
 public class CreateEvent extends MessageAction {
+    @Override
+    public int contentLength() {
+        return 2;
+    }
+
     @Override
     public String name() {
         return "CreateEvent";
@@ -21,6 +24,8 @@ public class CreateEvent extends MessageAction {
     @Override
     public void Run(@NotNull MessageReceivedEvent receivedEvent, Listener listener) {
         var content = listener.GetContent(receivedEvent.getMessage().getContentRaw());
+        if (content.size() < contentLength()) listener.ContentToShort(receivedEvent.getChannel());
+
         var event = new Event(content.get(0), content.get(1));
 
         receivedEvent.getChannel().sendMessage(event.GetMessage()).queue(message -> {
