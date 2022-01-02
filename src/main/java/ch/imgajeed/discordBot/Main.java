@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 
 public class Main {
     public static void main(String[] args) throws LoginException, FileNotFoundException, JsonProcessingException {
-        var bot = new Bot("ODU4NDI0ODk3MDMyOTQ1NjY0.YNd8fA.SlPSP9QLDyGri--WzP-ssp_2yg4", "-");
+        var bot = new Bot("TOKEN", "-");
         bot.Build();
     }
 }
