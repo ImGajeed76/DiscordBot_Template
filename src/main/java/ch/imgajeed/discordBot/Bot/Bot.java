@@ -23,7 +23,7 @@ public class Bot {
         builder.setBulkDeleteSplittingEnabled(false);
         builder.setCompression(Compression.NONE);
         builder.setActivity(Activity.playing(prefix + "help"));
-        builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
+        //builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
         builder.addEventListeners(new Listener(prefix, builder));
     }
 

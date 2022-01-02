@@ -1,12 +1,5 @@
 package ch.imgajeed.discordBot.Bot;
 
-import ch.imgajeed.discordBot.Bot.Events.CreateEvent;
-import ch.imgajeed.discordBot.Bot.Events.Event;
-import ch.imgajeed.discordBot.Bot.Random.RandomNumber;
-import ch.imgajeed.discordBot.Bot.RandomTeams.CreateRandomTeam;
-import ch.imgajeed.discordBot.Bot.RandomTeams.Team;
-import ch.imgajeed.discordBot.Bot.Vote.CreateVote;
-import ch.imgajeed.discordBot.Bot.Vote.Vote;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -25,10 +18,6 @@ public class Listener extends ListenerAdapter {
     public ArrayList<MessageAction> messageActions = new ArrayList<>();
     public ArrayList<ReactionAction> reactionActions = new ArrayList<>();
 
-    public ArrayList<Vote> votes = new ArrayList<>();
-    public ArrayList<Event> events = new ArrayList<>();
-    public ArrayList<Team> teams = new ArrayList<>();
-
     public String prefix;
     public JDABuilder builder;
 
@@ -38,92 +27,11 @@ public class Listener extends ListenerAdapter {
         this.prefix = prefix;
         this.builder = builder;
 
-        var parameters = GetParameters();
-        if (parameters != null) {
-            reactionActions = parameters.reactionActions;
-            votes = parameters.votes;
-            events = parameters.events;
-            teams = parameters.teams;
-        } else {
-            System.out.println("parameters == null");
-        }
-
         messageActions.add(new Help());
-        messageActions.add(new CreateEvent());
-        messageActions.add(new CreateVote());
-        messageActions.add(new CreateRandomTeam());
-        messageActions.add(new RandomNumber());
     }
 
     public void ContentToShort(MessageChannel channel) {
         channel.sendMessage("> **Error:** Content is to short. Start parameter by using a ':'.").queue();
-    }
-
-    private Parameters GetParameters() {
-        try {
-            FileInputStream fin = new FileInputStream(path);
-            ObjectInputStream ios = new ObjectInputStream(fin);
-            Parameters parameters = (Parameters) ios.readObject();
-            System.out.println("Save from " + parameters.date + " loaded");
-            ios.close();
-            return parameters;
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-        //try {
-        //    var scanner = new Scanner(new File(path));
-        //    StringBuilder data = new StringBuilder();
-//
-        //    while (scanner.hasNextLine()) {
-        //        data.append(scanner.nextLine());
-        //    }
-//
-        //    ObjectMapper mapper = new ObjectMapper();
-//
-        //    System.out.println(data);
-        //    mapper.registerModule(new ParanamerModule());
-        //    mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-//
-        //    var parameters = mapper.readValue(data.toString(), Parameters.class);
-        //    System.out.println(parameters.events);
-//
-        //    return parameters;
-        //} catch (Exception e) {
-        //    System.out.println(e);
-        //}
-
-        return null;
-    }
-
-    private void SaveChanges() throws IOException {
-        var parameters = new Parameters(reactionActions, votes, events, teams);
-
-        try {
-            FileOutputStream fos = new FileOutputStream(path);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(parameters);
-            oos.close();
-            System.out.println("Saved");
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-        //try {
-        //    var fileWriter = new FileWriter(path);
-        //    var bufferedWriter = new BufferedWriter(fileWriter);
-//
-        //    ObjectMapper mapper = new ObjectMapper();
-        //    mapper.registerModule(new ParanamerModule());
-        //    mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-//
-        //    var data = mapper.writeValueAsString(parameters);
-        //    System.out.println(data);
-        //    bufferedWriter.write(data);
-        //    bufferedWriter.close();
-        //} catch (IOException e) {
-        //    System.out.println(e);
-        //}
     }
 
     private boolean isPrivateChanel(ChannelType channelType, MessageChannel channel, User user) {
@@ -145,11 +53,6 @@ public class Listener extends ListenerAdapter {
         if (reactionAction != null) {
             reactionAction.OnReactionRemove(event, this);
         }
-
-        try {
-            SaveChanges();
-        } catch (IOException ignored) {
-        }
     }
 
     @Override
@@ -161,11 +64,6 @@ public class Listener extends ListenerAdapter {
         var reactionAction = GetReactionAction(reactionActions, event.getMessageId());
         if (reactionAction != null) {
             reactionAction.OnReactionAdd(event, this);
-        }
-
-        try {
-            SaveChanges();
-        } catch (IOException ignored) {
         }
     }
 
@@ -181,11 +79,6 @@ public class Listener extends ListenerAdapter {
         var action = GetMessageAction(messageActions, GetMessageAction(message));
         if (action != null) {
             action.Run(event, this);
-        }
-
-        try {
-            SaveChanges();
-        } catch (IOException ignored) {
         }
     }
 
