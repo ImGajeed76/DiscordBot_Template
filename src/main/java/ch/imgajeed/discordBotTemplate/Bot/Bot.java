@@ -31,7 +31,8 @@ public class Bot {
             Scanner scanner = new Scanner(tokenFile);
             token = scanner.nextLine();
         } catch (FileNotFoundException e) {
-            System.err.println("Error: File of token not found");
+            System.err.println("Error: Token file not found");
+            System.exit(1);
         }
 
         Create(token);
