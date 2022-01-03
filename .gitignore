@@ -1,3 +1,4 @@
 # Project exclude paths
 /target/
 /token.txt
+/src/main/java/ch/imgajeed/discordBotTemplate/Bot/Commands/NewCommands/

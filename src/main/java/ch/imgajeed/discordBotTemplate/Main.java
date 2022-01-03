@@ -1,6 +1,6 @@
-package ch.imgajeed.discordBot;
+package ch.imgajeed.discordBotTemplate;
 
-import ch.imgajeed.discordBot.Bot.Bot;
+import ch.imgajeed.discordBotTemplate.Bot.Bot;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;

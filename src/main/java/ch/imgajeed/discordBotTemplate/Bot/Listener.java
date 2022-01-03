@@ -1,7 +1,7 @@
-package ch.imgajeed.discordBot.Bot;
+package ch.imgajeed.discordBotTemplate.Bot;
 
-import ch.imgajeed.discordBot.Bot.Commands.Examples.Echo;
-import ch.imgajeed.discordBot.Bot.Commands.Examples.RandomNumber;
+import ch.imgajeed.discordBotTemplate.Bot.Commands.Examples.Echo;
+import ch.imgajeed.discordBotTemplate.Bot.Commands.Examples.RandomNumber;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -211,7 +211,7 @@ public class Listener extends ListenerAdapter {
         return stringContent;
     }
 
-    // -------Add your commands / functions here:-------
+    // -------Add your actions here:-------
     private void AddCommands() {
         messageActions.add(new RandomNumber());
         messageActions.add(new Echo());

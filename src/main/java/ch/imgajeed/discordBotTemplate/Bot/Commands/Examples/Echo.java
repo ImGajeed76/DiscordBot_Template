@@ -1,7 +1,7 @@
-package ch.imgajeed.discordBot.Bot.Commands.Examples;
+package ch.imgajeed.discordBotTemplate.Bot.Commands.Examples;
 
-import ch.imgajeed.discordBot.Bot.Listener;
-import ch.imgajeed.discordBot.Bot.MessageAction;
+import ch.imgajeed.discordBotTemplate.Bot.Listener;
+import ch.imgajeed.discordBotTemplate.Bot.MessageAction;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 

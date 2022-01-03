@@ -1,4 +1,4 @@
-package ch.imgajeed.discordBot.Bot;
+package ch.imgajeed.discordBotTemplate.Bot;
 
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;

@@ -1,4 +1,4 @@
-package ch.imgajeed.discordBot.Bot;
+package ch.imgajeed.discordBotTemplate.Bot;
 
 import java.io.Serializable;
 
