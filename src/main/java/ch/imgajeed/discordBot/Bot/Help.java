@@ -16,8 +16,8 @@ public class Help extends MessageAction {
     }
 
     @Override
-    public String content() {
-        return "";
+    public String[] content() {
+        return new String[]{""};
     }
 
     @Override
@@ -38,7 +38,7 @@ public class Help extends MessageAction {
             StringBuilder message = new StringBuilder();
 
             for (int j = 0; j < divider; j++) {
-                message.append(" > ").append(listener.prefix).append("**").append(messageActions.get(((i + 1) * j)).name()).append("**   ").append(messageActions.get(((i + 1) * j)).content()).append("\n");
+                message.append(" > ").append(listener.prefix).append("**").append(messageActions.get(((i + 1) * j)).name()).append("**   ").append(listener.ContentToString(messageActions.get(((i + 1) * j)).content())).append("\n");
             }
 
             SendMessageToAuthor(event, message.toString());
@@ -47,7 +47,7 @@ public class Help extends MessageAction {
         StringBuilder message = new StringBuilder();
 
         for (int i = 0; i < rest; i++) {
-            message.append(" > ").append(listener.prefix).append("**").append(messageActions.get(messageActions.size() - (rest - i)).name()).append("**   ").append(messageActions.get(messageActions.size() - (rest - i)).content()).append("\n");
+            message.append(" > ").append(listener.prefix).append("**").append(messageActions.get(messageActions.size() - (rest - i)).name()).append("**   ").append(listener.ContentToString(messageActions.get(messageActions.size() - (rest - i)).content())).append("\n");
         }
 
         SendMessageToAuthor(event, message.toString());

@@ -1,4 +1,4 @@
-package ch.imgajeed.discordBot.Bot.Commands;
+package ch.imgajeed.discordBot.Bot.Commands.Examples;
 
 import ch.imgajeed.discordBot.Bot.Listener;
 import ch.imgajeed.discordBot.Bot.MessageAction;
@@ -19,8 +19,8 @@ public class RandomNumber extends MessageAction {
     }
 
     @Override
-    public String content() {
-        return ":*min* :*max*";
+    public String[] content() {
+        return new String[]{"min", "max"};
     }
 
     @Override

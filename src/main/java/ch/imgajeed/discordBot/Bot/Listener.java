@@ -1,7 +1,7 @@
 package ch.imgajeed.discordBot.Bot;
 
-import ch.imgajeed.discordBot.Bot.Commands.Echo;
-import ch.imgajeed.discordBot.Bot.Commands.RandomNumber;
+import ch.imgajeed.discordBot.Bot.Commands.Examples.Echo;
+import ch.imgajeed.discordBot.Bot.Commands.Examples.RandomNumber;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -12,8 +12,8 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 //Do not edit!
 public class Listener extends ListenerAdapter {
@@ -30,8 +30,28 @@ public class Listener extends ListenerAdapter {
         this.contentPrefix = contentPrefix;
 
         messageActions.add(new Help());
-        messageActions.add(new RandomNumber());
-        messageActions.add(new Echo());
+        AddCommands();
+    }
+
+    public Listener(String prefix, JDABuilder builder) {
+        this.prefix = prefix;
+        this.builder = builder;
+        this.contentPrefix = ':';
+
+        messageActions.add(new Help());
+        AddCommands();
+    }
+
+    public String ContentToString(String[] content) {
+        StringBuilder result = new StringBuilder();
+
+        for (var parameter : content) {
+            if (!Objects.equals(parameter, "")) {
+                result.append(contentPrefix).append("*").append(parameter).append("* ");
+            }
+        }
+
+        return result.toString();
     }
 
     public void ContentToShort(MessageChannel channel) {
@@ -190,4 +210,11 @@ public class Listener extends ListenerAdapter {
 
         return stringContent;
     }
+
+    // -------Add your commands / functions here:-------
+    private void AddCommands() {
+        messageActions.add(new RandomNumber());
+        messageActions.add(new Echo());
+    }
+    // -------------------------------------------------
 }

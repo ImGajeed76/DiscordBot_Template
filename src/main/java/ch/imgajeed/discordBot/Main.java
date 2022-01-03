@@ -1,14 +1,14 @@
 package ch.imgajeed.discordBot;
 
 import ch.imgajeed.discordBot.Bot.Bot;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import javax.security.auth.login.LoginException;
-import java.io.FileNotFoundException;
+import java.io.File;
 
 public class Main {
-    public static void main(String[] args) throws LoginException, FileNotFoundException, JsonProcessingException {
-        var bot = new Bot("TOKEN", "-");
+    public static void main(String[] args) throws LoginException {
+        var tokenFile = new File("token.txt");
+        var bot = new Bot(tokenFile, "-");
         bot.Build();
     }
 }

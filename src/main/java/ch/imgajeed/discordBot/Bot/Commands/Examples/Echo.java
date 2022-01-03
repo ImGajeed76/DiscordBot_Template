@@ -1,4 +1,4 @@
-package ch.imgajeed.discordBot.Bot.Commands;
+package ch.imgajeed.discordBot.Bot.Commands.Examples;
 
 import ch.imgajeed.discordBot.Bot.Listener;
 import ch.imgajeed.discordBot.Bot.MessageAction;
@@ -17,8 +17,8 @@ public class Echo extends MessageAction {
     }
 
     @Override
-    public String content() {
-        return ":*text*";
+    public String[] content() {
+        return new String[]{"text"};
     }
 
     @Override
