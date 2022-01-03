@@ -24,8 +24,6 @@ public class Listener extends ListenerAdapter {
     public JDABuilder builder;
     public Character contentPrefix;
 
-    public static String path = "data.json";
-
     public Listener(String prefix, JDABuilder builder, Character contentPrefix) {
         this.prefix = prefix;
         this.builder = builder;
