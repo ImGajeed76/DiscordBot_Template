@@ -51,8 +51,6 @@ public class Help extends MessageAction {
         }
 
         SendMessageToAuthor(event, message.toString());
-
-        SendMessageToAuthor(event, "> *bsp:* -CreateEvent :Testing the bot! :14.30");
     }
 
     private void SendMessageToAuthor(@NotNull MessageReceivedEvent event, String message) {

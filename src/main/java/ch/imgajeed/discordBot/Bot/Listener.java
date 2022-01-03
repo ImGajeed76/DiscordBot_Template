@@ -1,5 +1,7 @@
 package ch.imgajeed.discordBot.Bot;
 
+import ch.imgajeed.discordBot.Bot.Commands.Echo;
+import ch.imgajeed.discordBot.Bot.Commands.RandomNumber;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -20,18 +22,22 @@ public class Listener extends ListenerAdapter {
 
     public String prefix;
     public JDABuilder builder;
+    public Character contentPrefix;
 
     public static String path = "data.json";
 
-    public Listener(String prefix, JDABuilder builder) {
+    public Listener(String prefix, JDABuilder builder, Character contentPrefix) {
         this.prefix = prefix;
         this.builder = builder;
+        this.contentPrefix = contentPrefix;
 
         messageActions.add(new Help());
+        messageActions.add(new RandomNumber());
+        messageActions.add(new Echo());
     }
 
     public void ContentToShort(MessageChannel channel) {
-        channel.sendMessage("> **Error:** Content is to short. Start parameter by using a ':'.").queue();
+        channel.sendMessage("> **Error:** Content is to short. Start parameter by using a '" + contentPrefix + "'.").queue();
     }
 
     private boolean isPrivateChanel(ChannelType channelType, MessageChannel channel, User user) {
@@ -156,7 +162,7 @@ public class Listener extends ListenerAdapter {
         ArrayList<StringBuilder> content = new ArrayList<>();
 
         for (char c : m) {
-            if (c == ':') {
+            if (c == contentPrefix) {
                 write = false;
                 if (pos > -1) {
                     if (content.get(pos).length() > 1) {
@@ -172,7 +178,7 @@ public class Listener extends ListenerAdapter {
                 content.get(pos).append(c);
             }
 
-            if (c == ':') {
+            if (c == contentPrefix) {
                 write = true;
                 pos++;
             }

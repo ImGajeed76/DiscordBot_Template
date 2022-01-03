@@ -24,7 +24,7 @@ public class Bot {
         builder.setCompression(Compression.NONE);
         builder.setActivity(Activity.playing(prefix + "help"));
         //builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
-        builder.addEventListeners(new Listener(prefix, builder));
+        builder.addEventListeners(new Listener(prefix, builder, ':'));
     }
 
     public void Build() throws LoginException {
