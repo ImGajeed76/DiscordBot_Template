@@ -3,15 +3,15 @@ package ch.imgajeed.discordBotTemplate.Bot;
 import ch.imgajeed.discordBotTemplate.Bot.Commands.Examples.Echo;
 import ch.imgajeed.discordBotTemplate.Bot.Commands.Examples.RandomNumber;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -23,6 +23,15 @@ public class Listener extends ListenerAdapter {
     public String prefix;
     public JDABuilder builder;
     public Character contentPrefix;
+
+    public int memberCheckTimeOut = 60; // in seconds
+    private long lastSecond = 0;
+
+    public ArrayList<Member> totalMembers = new ArrayList<>();
+    public boolean showTotalMembers = true;
+
+    private long lastChangeSecond = 0;
+    private boolean watching = true;
 
     public Listener(String prefix, JDABuilder builder, Character contentPrefix) {
         this.prefix = prefix;
@@ -36,7 +45,7 @@ public class Listener extends ListenerAdapter {
     public Listener(String prefix, JDABuilder builder) {
         this.prefix = prefix;
         this.builder = builder;
-        this.contentPrefix = ':';
+        this.contentPrefix = '>';
 
         messageActions.add(new Help());
         AddCommands();
@@ -93,6 +102,9 @@ public class Listener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+        updateMemberCount(event);
+        changeActivity(event);
+
         String message = event.getMessage().getContentRaw().toLowerCase();
         if (!IncludesPrefix(message)) {
             return;
@@ -209,6 +221,44 @@ public class Listener extends ListenerAdapter {
         }
 
         return stringContent;
+    }
+
+    public void updateMemberCount(MessageReceivedEvent event) {
+        var currentSecond = LocalDateTime.now().toEpochSecond(ZoneOffset.of("Z"));
+
+        if (currentSecond > lastSecond + memberCheckTimeOut) {
+
+            System.out.println("check");
+            var guilds = event.getJDA().getGuilds();
+            var totalMembers = new ArrayList<String>();
+            this.totalMembers = new ArrayList<>();
+
+            for (var guild : guilds) {
+                for (var member : guild.getMembers()) {
+                    if (!totalMembers.contains(member.getId()) && !member.getUser().isBot() && !member.getUser().getName().equals("PGC Network")) {
+                        totalMembers.add(member.getId());
+                        this.totalMembers.add(member);
+                    }
+                }
+            }
+
+            event.getJDA().getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, totalMembers.size() + " members"));
+            lastSecond = LocalDateTime.now().toEpochSecond(ZoneOffset.of("Z"));
+        }
+    }
+
+    private void changeActivity(MessageReceivedEvent event) {
+        var currentSecond = LocalDateTime.now().toEpochSecond(ZoneOffset.of("Z"));
+
+        if (currentSecond > lastChangeSecond + 10) {
+            if (watching && showTotalMembers) {
+                event.getJDA().getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, totalMembers.size() + " members"));
+            } else {
+                event.getJDA().getPresence().setActivity(Activity.playing(prefix + "help"));
+            }
+            watching = !watching;
+            lastChangeSecond = LocalDateTime.now().toEpochSecond(ZoneOffset.of("Z"));
+        }
     }
 
     // -------Add your actions here:-------

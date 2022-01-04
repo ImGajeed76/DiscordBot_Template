@@ -15,15 +15,18 @@ import java.util.Scanner;
 public class Bot {
     public static JDABuilder builder;
     public static String prefix;
+    public static Character contentPrefix;
 
-    public Bot(String token, String prefix) {
+    public Bot(String token, String prefix, Character contentPrefix) {
         Bot.prefix = prefix;
+        Bot.contentPrefix = contentPrefix;
         Create(token);
     }
 
 
-    public Bot(File tokenFile, String prefix) {
+    public Bot(File tokenFile, String prefix, Character contentPrefix) {
         Bot.prefix = prefix;
+        Bot.contentPrefix = contentPrefix;
 
         String token = "";
 
@@ -39,20 +42,20 @@ public class Bot {
     }
 
     private void Create(String token) {
-        builder = JDABuilder.createDefault(token);
+        builder = JDABuilder.create(token,
+                GatewayIntent.GUILD_MEMBERS,
+                GatewayIntent.GUILD_MESSAGES,
+                GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                GatewayIntent.GUILD_EMOJIS,
+                GatewayIntent.GUILD_VOICE_STATES,
+                GatewayIntent.GUILD_PRESENCES
+        );
         builder.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE);
         builder.setBulkDeleteSplittingEnabled(false);
         builder.setCompression(Compression.NONE);
         builder.setActivity(Activity.playing(prefix + "help"));
 
-        builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
-        builder.enableIntents(GatewayIntent.GUILD_MESSAGES);
-        builder.enableIntents(GatewayIntent.GUILD_MESSAGE_REACTIONS);
-        builder.enableIntents(GatewayIntent.GUILD_EMOJIS);
-        builder.enableIntents(GatewayIntent.GUILD_VOICE_STATES);
-        builder.enableIntents(GatewayIntent.GUILD_PRESENCES);
-
-        builder.addEventListeners(new Listener(prefix, builder));
+        builder.addEventListeners(new Listener(prefix, builder, contentPrefix));
     }
 
     public void Build() throws LoginException {
